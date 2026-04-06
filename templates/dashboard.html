@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{font-family:Arial;background:#f4f6fa;margin:0;}
+.header{
+display:flex;
+justify-content:space-between;
+padding:15px;
+background:#4a67f5;
+color:white;
+}
+.stats{
+display:flex;
+gap:15px;
+padding:20px;
+}
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+flex:1;
+text-align:center;
+}
+table{
+width:95%;
+margin:20px;
+background:white;
+border-collapse:collapse;
+}
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+<h2>AI Task Manager</h2>
+<a href="/logout" style="color:white;">Logout</a>
+</div>
+
+<div class="stats">
+<div class="card">Total {{total}}</div>
+<div class="card">Completed {{completed}}</div>
+<div class="card">Pending {{pending}}</div>
+<div class="card">High {{high}}</div>
+</div>
+
+<form method="POST" action="/add_task" style="padding:20px;">
+<input name="title" placeholder="Task" required>
+<input type="date" name="deadline" required>
+<input type="hidden" name="user" value="{{user}}">
+<input type="hidden" name="org" value="{{org}}">
+<button>Add Task</button>
+</form>
+
+<table>
+<tr>
+<th>Task</th>
+<th>Priority</th>
+<th>Status</th>
+<th>Deadline</th>
+<th>Action</th>
+</tr>
+
+{% for t in tasks %}
+<tr>
+<td>{{t.title}}</td>
+<td>{{t.priority}}</td>
+<td>{{t.status}}</td>
+<td>{{t.deadline}}</td>
+<td>
+<a href="/complete/{{t.id}}/{{user}}/{{org}}">Done</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<div style="width:40%;margin:auto;">
+<canvas id="chart"></canvas>
+</div>
+
+<script>
+new Chart(document.getElementById("chart"), {
+type: 'pie',
+data: {
+labels: ['Completed','Pending'],
+datasets: [{
+data: [{{completed}}, {{pending}}]
+}]
+}
+});
+</script>
+
+</body>
+</html>
